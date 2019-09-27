@@ -6,13 +6,14 @@ soap 2: another useless experiment in pygame
 Like soap, we have pokable voronoi cells, but here we sample colors from images.
 
 Poke voronoi cells by left-clicking.
+'v' to toggle between Voronoi cells and Delaunay Triangulation.
 """
 import numpy as np
 from numpy import array, where
 from numpy.linalg import norm
 from numpy.random import random_sample
 from PIL import Image
-from scipy.spatial.qhull import QhullError, Voronoi
+from scipy.spatial.qhull import QhullError, Voronoi, Delaunay
 import pygame
 from pygame.mouse import get_pos as mouse_xy
 from pygame.draw import polygon
@@ -69,6 +70,7 @@ class Game:
         self.window = pygame.display.set_mode(DIM)
         self.reset() #Randomly place cell centers
         self.running = True
+        self.voronoi = True
 
     def draw_voronoi_cells(self):
         """
@@ -90,6 +92,26 @@ class Game:
 
         for center, poly in polygons:
             polygon(self.window, IMAGE[tuple(center.astype(int))[::-1]], poly)
+
+    def draw_delaunay_triangulation(self):
+        """
+        Draws the Delaunay triangulation of cell centers.
+        """
+        points = [center.loc for center in self.centers]
+        try:
+            dual = Delaunay(points)
+        except (QhullError, ValueError):
+            #Either too few points or points are degenerate.
+            #Everything is fine, we just won't draw any simplices.
+            #Leave the function quietly!
+            return
+
+        simplices = [[dual.points[i] for i in simplex]
+                     for simplex in dual.simplices]
+
+        for simplex in simplices:
+            centroid = tuple((sum(simplex) / 3).astype(int))[::-1]
+            polygon(self.window, IMAGE[centroid], simplex)
 
     def reset(self):
         """
@@ -117,6 +139,8 @@ class Game:
             elif event.type == 2:  #key down
                 if event.key == 114:  #'r'
                     self.reset()
+                elif event.key == 118:  #'v'
+                    self.voronoi = not self.voronoi
             elif event.type == 5:  #Mouse down
                 if event.button == 1:  #left-Click
                     self.poke(array(mouse_xy()))
@@ -132,7 +156,10 @@ class Game:
     def start(self):
         while self.running:
             self.window.fill((63, 63, 63))
-            self.draw_voronoi_cells()
+            if self.voronoi:
+                self.draw_voronoi_cells()
+            else:
+                self.draw_delaunay_triangulation()
             pygame.display.update()
             self.user_input()
             self.move_centers()
