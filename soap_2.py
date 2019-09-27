@@ -18,10 +18,10 @@ from pygame.mouse import get_pos as mouse_xy
 from pygame.draw import polygon
 
 #Load image to sample
-path = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
-#path = '/home/salt/Documents/Python/pygame/soap_2/starry_night.jpg'
-#path = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
-with Image.open(path) as image:
+PATH = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
+#PATH = '/home/salt/Documents/Python/pygame/soap_2/starry_night.jpg'
+#PATH = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
+with Image.open(PATH) as image:
     DIM = array(image.size)
     IMAGE = np.frombuffer(image.tobytes(), dtype=np.uint8)
     IMAGE = IMAGE.reshape((DIM[1], DIM[0], 3))
@@ -69,14 +69,6 @@ class Game:
         self.window = pygame.display.set_mode(DIM)
         self.reset() #Randomly place cell centers
         self.running = True
-
-    def move_centers(self):
-        """
-        Move the centers.
-        """
-        #Movement for cell centers
-        for center in self.centers:
-            center.move()
 
     def draw_voronoi_cells(self):
         """
@@ -128,6 +120,14 @@ class Game:
             elif event.type == 5:  #Mouse down
                 if event.button == 1:  #left-Click
                     self.poke(array(mouse_xy()))
+
+    def move_centers(self):
+        """
+        Move the centers.
+        """
+        #Movement for cell centers
+        for center in self.centers:
+            center.move()
 
     def start(self):
         while self.running:
