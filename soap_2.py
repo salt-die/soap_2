@@ -7,6 +7,7 @@ Like soap, we have pokable voronoi cells, but here we sample colors from images.
 
 Poke voronoi cells by left-clicking.
 'v' to toggle between Voronoi cells and Delaunay Triangulation.
+'r' to reset the cells.
 """
 import numpy as np
 from numpy import array, where
@@ -27,8 +28,8 @@ with Image.open(PATH) as image:
     IMAGE = np.frombuffer(image.tobytes(), dtype=np.uint8)
     IMAGE = IMAGE.reshape((DIM[1], DIM[0], 3))
 
-CELLS = 500 #Number of voronoi cells.
-MAX_VEL = 15
+CELLS = 500  #Number of voronoi cells.
+MAX_VEL = 15  #Max velocity of the cell centers.
 
 
 class Center:
@@ -58,10 +59,9 @@ class Center:
         #Reverse the velocity if out-of-bounds
         self.velocity[(self.loc < MAX_VEL) | (self.loc > DIM - MAX_VEL)] *= -1
         self.loc += self.velocity
-        #Wrap around borders if reversing didn't prevent OOB
-        self.loc %= DIM
+        self.loc %= DIM  #Wrap around borders if reversing didn't prevent OOB
         self.velocity *= self.FRICTION  #Reduce velocity from friction
-        self.velocity[abs(self.velocity) < .01] = 0.0   #Prevent jitter.
+        self.velocity[abs(self.velocity) < .01] = 0.0  #Prevent jitter
 
 class Game:
     def __init__(self):
@@ -72,6 +72,12 @@ class Game:
         self.running = True
         self.voronoi = True
 
+    def reset(self):
+        """
+        Reset position of the cell centers.
+        """
+        self.centers = {Center() for _ in range(CELLS)}
+
     def draw_voronoi_cells(self):
         """
         This function will handle drawing voronoi cells.
@@ -81,8 +87,6 @@ class Game:
             vor = Voronoi(points)
         except (QhullError, ValueError):
             #Either too few points or points are degenerate.
-            #Everything is fine, we just won't draw any cells.
-            #Leave the function quietly!
             return
 
         polygons = [(vor.points[where(vor.point_region == i)][0],
@@ -102,8 +106,6 @@ class Game:
             dual = Delaunay(points)
         except (QhullError, ValueError):
             #Either too few points or points are degenerate.
-            #Everything is fine, we just won't draw any simplices.
-            #Leave the function quietly!
             return
 
         simplices = [[dual.points[i] for i in simplex]
@@ -112,12 +114,6 @@ class Game:
         for simplex in simplices:
             centroid = tuple((sum(simplex) / 3).astype(int))[::-1]
             polygon(self.window, IMAGE[centroid], simplex)
-
-    def reset(self):
-        """
-        Reset position of the cell centers.
-        """
-        self.centers = {Center() for _ in range(CELLS)}
 
     def poke(self, loc):
         """
