@@ -19,9 +19,9 @@ from pygame.mouse import get_pos as mouse_xy
 from pygame.draw import polygon
 
 #Load image to sample
-#PATH = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
+PATH = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
 #PATH = '/home/salt/Documents/Python/pygame/soap_2/starry_night.jpg'
-PATH = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
+#PATH = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
 with Image.open(PATH) as image:
     DIM = array(image.size)
     IMAGE = np.frombuffer(image.tobytes(), dtype=np.uint8)
