@@ -12,3 +12,7 @@ Mona Lisa:
 American Gothic:
 
 ![American Gothic Preview](soap2_2.gif)
+
+Starry Night with Triangulation:
+
+![Starry Night Preview](soap2_3.gif)
