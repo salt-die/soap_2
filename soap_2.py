@@ -34,20 +34,11 @@ class Center:
     """
     Cell center class.  Cell centers have methods that affect their movement.
     """
+    friction = .97
+
     def __init__(self):
         self.velocity = array([0.0, 0.0])
         self.loc = random_sample(2) * DIM
-
-    def friction(self):
-        """
-        Applies friction and limits the magnitude of velocity.
-
-        The friction constant, fric, should satisfy 0 < fric < 1.
-        Don't fric it up.
-        """
-        fric = .97
-        self.velocity *= fric
-        self.velocity[abs(self.velocity) < .01] = 0.0   #Prevent jitter.
 
     def delta_velocity(self, delta):
         """
@@ -68,6 +59,8 @@ class Center:
         self.loc += self.velocity
         #Wrap around borders if reversing didn't prevent OOB
         self.loc %= DIM
+        self.velocity *= self.friction  #Reduce velocity from friction
+        self.velocity[abs(self.velocity) < .01] = 0.0   #Prevent jitter.
 
 class Game:
     def __init__(self):
@@ -84,7 +77,6 @@ class Game:
         #Movement for cell centers
         for center in self.centers:
             center.move()
-            center.friction()
 
     def draw_voronoi_cells(self):
         """
