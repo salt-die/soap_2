@@ -23,8 +23,8 @@ path = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
 #path = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
 with Image.open(path) as image:
     DIM = array(image.size)
-    im_arr = np.frombuffer(image.tobytes(), dtype=np.uint8)
-    im_arr = im_arr.reshape((DIM[1], DIM[0], 3))
+    IMAGE = np.frombuffer(image.tobytes(), dtype=np.uint8)
+    IMAGE = IMAGE.reshape((DIM[1], DIM[0], 3))
 
 CELLS = 500 #Number of voronoi cells.
 MAX_VEL = 15
@@ -74,7 +74,6 @@ class Game:
         pygame.init()
         pygame.display.set_caption('Soap 2')
         self.window = pygame.display.set_mode(DIM)
-        self.centers = {}
         self.reset() #Randomly place cell centers
         self.running = True
 
@@ -106,7 +105,7 @@ class Game:
                     if len(reg) > 3 or (len(reg) == 3 and -1 not in reg)]
 
         for center, poly in polygons:
-            polygon(self.window, im_arr[tuple(center.astype(int))[::-1]], poly)
+            polygon(self.window, IMAGE[tuple(center.astype(int))[::-1]], poly)
 
     def reset(self):
         """
