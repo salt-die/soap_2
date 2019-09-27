@@ -34,7 +34,7 @@ class Center:
     """
     Cell center class.  Cell centers have methods that affect their movement.
     """
-    friction = .97
+    FRICTION = .97
 
     def __init__(self):
         self.velocity = array([0.0, 0.0])
@@ -59,7 +59,7 @@ class Center:
         self.loc += self.velocity
         #Wrap around borders if reversing didn't prevent OOB
         self.loc %= DIM
-        self.velocity *= self.friction  #Reduce velocity from friction
+        self.velocity *= self.FRICTION  #Reduce velocity from friction
         self.velocity[abs(self.velocity) < .01] = 0.0   #Prevent jitter.
 
 class Game:
