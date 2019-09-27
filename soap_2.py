@@ -22,9 +22,9 @@ path = '/home/salt/Documents/Python/pygame/soap_2/mona_lisa.jpg'
 #path = '/home/salt/Documents/Python/pygame/soap_2/starry_night.jpg'
 #path = '/home/salt/Documents/Python/pygame/soap_2/american_gothic.jpeg'
 with Image.open(path) as image:
-    im_arr = np.frombuffer(image.tobytes(), dtype=np.uint8)
-    im_arr = im_arr.reshape((image.size[1], image.size[0], 3))
     DIM = array(image.size)
+    im_arr = np.frombuffer(image.tobytes(), dtype=np.uint8)
+    im_arr = im_arr.reshape((DIM[1], DIM[0], 3))
 
 CELLS = 500 #Number of voronoi cells.
 MAX_VEL = 15
@@ -106,7 +106,7 @@ class Game:
                     if len(reg) > 3 or (len(reg) == 3 and -1 not in reg)]
 
         for center, poly in polygons:
-            polygon(self.window, im_arr[tuple(center.astype(int)[::-1])], poly)
+            polygon(self.window, im_arr[tuple(center.astype(int))[::-1]], poly)
 
     def reset(self):
         """
