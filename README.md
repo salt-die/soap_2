@@ -4,4 +4,10 @@ Like [soap](https://github.com/salt-die/soap), we have pokable voronoi cells, bu
 
 Poke voronoi cells by left-clicking.
 
-![Soap_2 Preview](soap2.gif)
+Mona Lisa:
+
+![Mona Lisa Preview](soap2.gif)
+
+American Gothic:
+
+![American Gothic Preview](soap2_2.gif)
