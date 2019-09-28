@@ -14,7 +14,7 @@ from numpy import array, where
 from numpy.linalg import norm
 from numpy.random import random_sample
 from PIL import Image
-from scipy.spatial.qhull import QhullError, Voronoi, Delaunay
+from scipy.spatial.qhull import Voronoi, Delaunay
 import pygame
 from pygame.mouse import get_pos as mouse_xy
 from pygame.draw import polygon
@@ -28,7 +28,7 @@ with Image.open(PATH) as image:
     IMAGE = np.frombuffer(image.tobytes(), dtype=np.uint8)
     IMAGE = IMAGE.reshape((DIM[1], DIM[0], 3))
 
-CELLS = 500  #Number of voronoi cells.
+CELLS = 1000  #Number of voronoi cells.
 MAX_VEL = 15  #Max velocity of the cell centers.
 
 
@@ -83,11 +83,7 @@ class Game:
         This function will handle drawing voronoi cells.
         """
         points = [center.loc for center in self.centers]
-        try:
-            vor = Voronoi(points)
-        except (QhullError, ValueError):
-            #Either too few points or points are degenerate.
-            return
+        vor = Voronoi(points)
 
         polygons = [(vor.points[where(vor.point_region == i)][0],
                     [vor.vertices[j] for j in reg if j != -1])
@@ -102,11 +98,7 @@ class Game:
         Draws the Delaunay triangulation of cell centers.
         """
         points = [center.loc for center in self.centers]
-        try:
-            dual = Delaunay(points)
-        except (QhullError, ValueError):
-            #Either too few points or points are degenerate.
-            return
+        dual = Delaunay(points)
 
         simplices = [[dual.points[i] for i in simplex]
                      for simplex in dual.simplices]
