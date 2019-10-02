@@ -80,7 +80,7 @@ class Game:
 
     def draw_voronoi_cells(self):
         """
-        This function will handle drawing voronoi cells.
+        Draws Voronoi of cell centers.
         """
         points = [center.loc for center in self.centers]
         vor = Voronoi(points)
